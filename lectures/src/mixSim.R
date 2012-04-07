@@ -7,8 +7,9 @@
 setwd('/home/id/learning/dm201/lectures/data/')
 
 mixSim <- read.table(file="mixtureSimData.data")
-mixSimMat <- matrix(0.0,200,2)
 
+# split data into matrix with 2 columns
+mixSimMat <- matrix(0.0,200,2)
 mixSimMat[,1] <- mixSim[1:200,1]
 mixSimMat[,2] <- mixSim[201:400,1]
 
@@ -21,18 +22,20 @@ Y[101:200] <- 1.0
 linMod <- lm(Y~mixSimMat)
 coef <- linMod$coefficients
 
+# slope
 a <- (0.5-coef[1])/coef[3]
+# intercep
 b <- -coef[2]/coef[3]
 abline(a,b)
 
-
+# Create a grid of 10000 squares
 maxX1 <- max(mixSimMat[,1])
 minX1 <- min(mixSimMat[,1])
 maxX2 <- max(mixSimMat[,2])
 minX2 <- min(mixSimMat[,2])
 
+# create grid of potential points
 testMat <- matrix(0.0,10000,2)
-
 for(i in 1:100){
 	for(j in 1:100){
 		x1 <- minX1 + i*(maxX1 - minX1)/100
@@ -44,10 +47,12 @@ for(i in 1:100){
 }
 
 
+# range of x's
 XX <- c((1:100)*(maxX1 - minX1))
 XX <- XX/100
 XX <- XX + minX1
 
+# range of y's
 YY <- c((1:100)*(maxX2 - minX2))
 YY <- YY/100
 YY <- YY + minX2
@@ -109,4 +114,3 @@ points(testMat[-I1,],col = 3, pch=".")
 points(mixSimMat[1:100,], col = 3)
 points(mixSimMat[101:200,], col = 2)
 contour(XX,YY,ZZ,levels = 1.5, drawlabels = FALSE, add = TRUE)
-

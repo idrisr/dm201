@@ -4,9 +4,9 @@
 ###############################################################################
 
 
-setwd("/home/mike-bowles/Documents/StatisticsPapers/ESL/DataSets/Prostate")
-
-pdata <- read.table(file="data", header = TRUE, row.names=1)
+# setwd("/home/mike-bowles/Documents/StatisticsPapers/ESL/DataSets/Prostate")
+setwd("/home/id/learning/dm201/lectures/data/")
+pdata <- read.table(file="prostate", header = TRUE, row.names=1)
 
 #put predictors into X
 X <- pdata[,1:8]
