@@ -8,7 +8,7 @@ data <- read.table(file="data/mixtureSimData.data")
 train <- data.frame(X1 = data[1:200, ], X2 = data[201:400, ], 
                     Y = rep(c(0, 1), each=100))
 require(ggplot2)
-g <- ggplot(train, aes(X1, X2)) + geom_point(aes(colour=Y)) +
+g <- ggplot(train, aes(X1, X2)) + geom_point(aes(colour=as.factor(Y))) +
         opts(legend.position="none")
 ggsave(filename='plots/orig.png', plot=g, height=5, width=5)
 
