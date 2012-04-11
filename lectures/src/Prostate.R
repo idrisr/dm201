@@ -16,7 +16,7 @@ Y <- pdata[,9]
 Itrain <- which(pdata[,10])
 
 #demean X and bring to unit variance
-for(i in 1:8){
+for(i in 1:length(names(X))){
 	m <- sum(X[,i])
 	m <- m/length(X[,i])
 	X[,i] <- X[,i]-m

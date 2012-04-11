@@ -1,41 +1,25 @@
-# TODO: Add comment
-# 
+###############################################################################
 # Author: mike-bowles
+# Edited: idris-raja
 ###############################################################################
 
-# setwd("/home/mike-bowles/Documents/StatisticsPapers/ESL/DataSets/mixtureSim")
 setwd('/home/id/learning/dm201/lectures/data/')
 
-mixSim <- read.table(file="mixtureSimData.data")
+data <- read.table(file="mixtureSimData.data")
 
-# split data into matrix with 2 columns
-mixSimMat <- matrix(0.0,200,2)
-mixSimMat[,1] <- mixSim[1:200,1]
-mixSimMat[,2] <- mixSim[201:400,1]
-
-plot(mixSimMat)
-points(mixSimMat[101:200,1:2], col = 2)
-points(mixSimMat[1:100,1:2], col = 3)
-Y <- rep(0.0,200)
-Y[101:200] <- 1.0
-
-linMod <- lm(Y~mixSimMat)
-coef <- linMod$coefficients
-
-# slope
-a <- (0.5-coef[1])/coef[3]
-# intercep
-b <- -coef[2]/coef[3]
-abline(a,b)
-
-# Create a grid of 10000 squares
-maxX1 <- max(mixSimMat[,1])
-minX1 <- min(mixSimMat[,1])
-maxX2 <- max(mixSimMat[,2])
-minX2 <- min(mixSimMat[,2])
+train <- data.frame(X1 = data[1:200, ], X2 = data[201:400, ], 
+                    Y = rep(c(0, 1), each=100))
+require(ggplot2)
+g <- ggplot(train, aes(X1, X2)) + geom_point(aes(colour=Y)) +
+        opts(legend.position="none")
 
 # create grid of potential points
-testMat <- matrix(0.0,10000,2)
+minX1 <- min(train$X1)
+minX2 <- min(train$X2)
+maxX1 <- max(train$X1)
+maxX2 <- max(train$X2)
+
+testMat <- matrix(0.0, 10000, 2)
 for(i in 1:100){
 	for(j in 1:100){
 		x1 <- minX1 + i*(maxX1 - minX1)/100
@@ -45,72 +29,28 @@ for(i in 1:100){
 		testMat[index,2] <- x2
 	}	
 }
+test <- data.frame(testMat)
 
-
-# range of x's
-XX <- c((1:100)*(maxX1 - minX1))
-XX <- XX/100
-XX <- XX + minX1
-
-# range of y's
-YY <- c((1:100)*(maxX2 - minX2))
-YY <- YY/100
-YY <- YY + minX2
-
-
-#1st knn plot (15)
 require(class)
-KNN <- knn(mixSimMat, testMat, Y, 15)
-ZZ <- matrix(0.0,100,100)
-for(i in 1:100){
-	for(j in 1:100){
-		index <- (i-1)*100 + j
-		ZZ[i,j] <- KNN[index]
-	}
+knnplot <- function(train, test, classifier, k) {
+    KNN <- knn(train, test, classifier, k)
+    test$predict <- KNN
+    test$z <- c(0, 1)[sapply(test$predict, as.numeric)]
+    title = paste('k=', as.character(k), sep='')
+    # TODO: get the original points back in the graph
+    g <- ggplot(test, aes(X1, X2, z=z)) + 
+            geom_point(aes(colour = predict), size=1) + 
+            geom_contour(colour='black', size = 0.1) + 
+            opts(legend.position="none") + opts(title=title)
+    return(g)
 }
-I1 <- which(KNN == 1)
 
-plot(testMat, pch=".")
-points(testMat[I1,], col=2, pch=".")
-points(testMat[-I1,],col = 3, pch=".")
-points(mixSimMat[1:100,], col = 3)
-points(mixSimMat[101:200,], col = 2)
-contour(XX,YY,ZZ,levels = 1.5, drawlabels = FALSE, add = TRUE)
-
-
-#second knn plot (5)
-KNN <- knn(mixSimMat, testMat, Y, 5)
-ZZ <- matrix(0.0,100,100)
-for(i in 1:100){
-	for(j in 1:100){
-		index <- (i-1)*100 + j
-		ZZ[i,j] <- KNN[index]
-	}
+setwd('/home/id/learning/dm201/lectures/plots')
+for(k in 1:dim(train)[1]){
+# for(k in 1:10){
+    plot <- knnplot(train[, c('X1', 'X2')], test, train$Y, k)
+    name = paste(as.character(k), '.png', sep='')
+    ggsave(filename=name, plot=plot, height=5, width=5)
 }
-I1 <- which(KNN == 1)
-
-plot(testMat, pch=".")
-points(testMat[I1,], col=2, pch=".")
-points(testMat[-I1,],col = 3, pch=".")
-points(mixSimMat[1:100,], col = 3)
-points(mixSimMat[101:200,], col = 2)
-contour(XX,YY,ZZ,levels = 1.5, drawlabels = FALSE, add = TRUE)
-
-
-# third knn plot (1)
-KNN <- knn(mixSimMat, testMat, Y, 1)
-ZZ <- matrix(0.0,100,100)
-for(i in 1:100){
-	for(j in 1:100){
-		index <- (i-1)*100 + j
-		ZZ[i,j] <- KNN[index]
-	}
-}
-I1 <- which(KNN == 1)
-
-plot(testMat, pch=".")
-points(testMat[I1,], col=2, pch=".")
-points(testMat[-I1,],col = 3, pch=".")
-points(mixSimMat[1:100,], col = 3)
-points(mixSimMat[101:200,], col = 2)
-contour(XX,YY,ZZ,levels = 1.5, drawlabels = FALSE, add = TRUE)
+# make movie
+# ffmpeg -f image2 -f 1 -i %d.png -b 800k knn.mp4
