@@ -8,103 +8,122 @@
 setwd("/home/id/learning/dm201/1class_knn_reg/data/")
 pdata <- read.table(file="prostate", header = TRUE, row.names=1)
 
-#put predictors into X
-X <- pdata[,1:8]
-#put response into Y
-Y <- pdata[,9]
-#pull out indices which authors used as training set
-Itrain <- which(pdata[,10])
+no_scale <- c('lpsa', 'train')
+p.s <- data.frame(scale(pdata[, !(names(pdata) %in% no_scale)]))
+p.s <- cbind(p.s, pdata[, names(pdata) %in% no_scale])
 
-#demean X and bring to unit variance
-for(i in 1:length(names(X))){
-	m <- sum(X[,i])
-	m <- m/length(X[,i])
-	X[,i] <- X[,i]-m
-	v <- var(X[,i])
-	X[,i] <- X[,i]/sqrt(v)
-}
+#put predictors into X
+X <- pdata[, c(-9, -10)]
+
+#put response into Y
+Y <- pdata[, 9]
+
+#pull out indices which authors used as training set
+train <- which(pdata[, 10])
+
+# *****************************************
+#de-mean X and bring to unit variance
+
+# can also use 
+# X.s = scale(X)
+
+
+# for(i in 1:length(names(X))){
+	# m <- sum(X[,i])
+	# m <- m / length(X[, i])
+	# X[, i] <- X[, i] - m
+	# v <- var(X[, i])
+	# X[, i] <- X[, i] / sqrt(v)
+# }
+# *****************************************
+
 
 #put X into matrix form
-X <- as.matrix(X)
+# X <- as.matrix(X)
 
 #check covariance
 cor(X)
+cor(p.s[, c(-9, -10)])
 
 #linear model on full set (train + test)
-linMod <- lm(Y ~ X)
-linMod
+(linmod <- lm(lpsa ~ lcavol + lweight + age + lbph + svi + lcp + gleason + pgg45
+             , data = pdata))
 
 
 #restrict model to training set
-YY <- Y[Itrain]
-XX <- X[Itrain,1:8]
-
-linMod <- lm(YY ~ XX)
-linMod
+(linmod <- lm(lpsa ~ lcavol + lweight + age + lbph + svi + lcp + gleason + pgg45
+             , data = p.s[which(p.s$train==FALSE), ]))
 
 
-######################
-#######################
-#best subsets
-##############
-##########
+# *************************************************************************
+# ************************** best subsets *********************************
+# *************************************************************************
 
 require(leaps)
+nbest = 40
+leapOut <- leaps(X, Y, nbest = nbest)
 
-leapOut <- leaps(X,Y,nbest = 40)
 #have a look at leapOut
 str(leapOut)
 
-
 #have a look at leapOut$which
-w <- leapOut$which
-w
-
-
+(w <- leapOut$which)
+subsets <- as.numeric(row.names(w))
+table(subsets)
 
 #Compute cross-validation error for these subsets.
-xvalErr <- matrix(0.0, 8,40)
-num2char <- c("1","2","3","4","5","6","7","8")
+xvalErr <- matrix(0.0, length(names(X)), nbest)
+
+# num2char <- as.character(1:8)
+
 #start a loop for different subset sizes
-colIndex <- 1:8
+colIndex <- 1:length(names(X))
 
 #loop on different subset sizes
-for(isize in 2:8){
-	iSubsets <- which(rownames(w)[]==num2char[isize])
+for(isize in unique(subsets)){
+    iSubsets <- which(subsets == isize)
 	
-#start a loop to run though best subsets
+    #start a loop to run though best subsets
+    # 28 for 2
+    # 1 for 8
+    # see tables(iSubsets)
 	for(isets in 1:length(iSubsets)){
-		iCol <- which(w[iSubsets[isets],])
-		Xtemp <- as.matrix(X[,iCol])		
+        # which columns were used to get best subset
+		iCol <- which(w[iSubsets[isets], ])
+
+        # grab columns used for best subset
+		Xtemp <- X[, iCol]
 	
 		nxval <- 10
-		Index <- 1:length(X[,1])
+		Index <- 1:length(X[, 1])
 
-#crossvalidation
+        #crossvalidation
 		for(ixval in 1:nxval){
-			Iout <- which(Index%%nxval==(ixval-1))
-			XtempTemp <- Xtemp[-Iout,1:ncol(Xtemp)]
-			Xnew <- Xtemp[Iout,]
+            # held out group?
+			Iout <- which(Index%%nxval == (ixval - 1))
+
+            # training set
+			XtempTemp <- Xtemp[-Iout, 1:ncol(Xtemp)]
+
+            # CONTINUE HERE. WTF
+
+			Xnew <- Xtemp[Iout, ]
 			Ytemp <- Y[-Iout]
 			Ynew <- Y[Iout]
 			linMod <- lm(Ytemp ~ XtempTemp)	
 			v <- as.array(linMod$coefficients)
-			yHat <- rep(0.0,length(Xnew[,1]))
-			for(i in 1:length(Xnew[,1])){
+			yHat <- rep(0.0, length(Xnew[, 1]))
+			for(i in 1:length(Xnew[, 1])){
 				yHat[i] <- v[1]
 				for(j in 1:isize){
-					yHat[i] <- yHat[i] + Xnew[i,j]*v[j+1]
+					yHat[i] <- yHat[i] + Xnew[i, j] * v[j + 1]
 				}
-				
 			}
 			dY <- yHat - Ynew
-			se <- (1/length(Xnew[,1]))*sum(dY*dY)
-			xvalErr[isize,isets] <- xvalErr[isize,isets] + se/nxval
-			
+			se <- (1 / length(Xnew[, 1])) * sum(dY * dY)
+			xvalErr[isize, isets] <- xvalErr[isize, isets] + se / nxval
 		}
-
 	}
-
 }
 
 #run separate for subset size = 1
