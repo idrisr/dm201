@@ -5,7 +5,7 @@
 
 
 # setwd("/home/mike-bowles/Documents/StatisticsPapers/ESL/DataSets/Prostate")
-setwd("/home/id/learning/dm201/lectures/data/")
+setwd("/home/id/learning/dm201/1class_knn_reg/data/")
 pdata <- read.table(file="prostate", header = TRUE, row.names=1)
 
 #put predictors into X
@@ -177,14 +177,18 @@ plot(output)
 Index <- 1:nrow(X)
 colIndex <- 1:8
 seBest <- 1000000.0
-seArray <- rep(0.0,7)
-Xtemp <- X[,1]
+seArray <- rep(0.0, 7)
+Xtemp <- X[, 1]
 nxval <- 10
+
 for(iTry in 1:8){
+    # iTry <- 2
+    # grab one column
 	Xtemp <- X[,iTry]
 	se <- 0.0
 	for(ixval in 1:nxval){
-		Iout <- which(Index%%nxval==(ixval-1))
+        # CV: split training set to train and test 
+		Iout <- which(Index%%nxval == (ixval - 1))
 		XtempTemp <- Xtemp[-Iout]
 		Xnew <- Xtemp[Iout]
 		Ytemp <- Y[-Iout]
@@ -192,14 +196,20 @@ for(iTry in 1:8){
 		linMod <- lm(Ytemp ~ XtempTemp)	
 		v <- as.array(linMod$coefficients)
 		yHat <- rep(0.0,length(Xnew))
+
+        #predict yHat from new coefficients
 		for(i in 1:length(Xnew)){
 			yHat[i] <- v[1] + Xnew[i]*v[2]		
 		}
 		dY <- yHat -Ynew
-		seTemp <- (1/length(Xnew))*sum(dY*dY)
+
+        #calc standard error
+		seTemp <- (1 / length(Xnew)) * sum(dY * dY)
 		se <- se + seTemp/nxval		
 	}
-	#print(se)
+    print(se)
+
+    # update se with best se and its index
 	if(se<seBest){
 		seBest <- se
 		iBest <- iTry
@@ -207,6 +217,7 @@ for(iTry in 1:8){
 }
 seArray[1] <- seBest
 I <- iBest
+# ***************************************************************
 
 
 #run through the same calculation for the next 6 variables
@@ -262,7 +273,6 @@ seArray2 <- rep(0.0,7)
 nxval <- 10
 
 for(iStep in 1:6){
-	
 	seBest <- 1000000
 	for(iTry in 1:length(colSelection)){
 		iCols <- c(I,colSelection[iTry])
@@ -285,7 +295,6 @@ for(iStep in 1:6){
 				for(j in 1:isize){
 					yHat[i] <- yHat[i] + Xnew[i,j]*v[j+1]
 				}
-				
 			}
 			dY <- yHat - Ynew
 			seTemp <- ((1/len)*sum(dY*dY))
@@ -341,8 +350,5 @@ colSelection <- colIndex[-I]
 print(colIndex[-I])
 seArray2[8-iStep] <- seBest
 	
-
-
 plot(sqrt(seArray2))
 points(sqrt(seArray), pch=".",col=3, cex=3)
-
