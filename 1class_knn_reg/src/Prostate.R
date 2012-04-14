@@ -80,7 +80,8 @@ xvalErr <- matrix(0.0, length(names(X)), nbest)
 colIndex <- 1:length(names(X))
 
 #loop on different subset sizes
-for(isize in unique(subsets)){
+# for(isize in unique(subsets)){
+for(isize in 2:8){
     iSubsets <- which(subsets == isize)
 	
     #start a loop to run though best subsets
@@ -159,18 +160,11 @@ for(isets in 1:length(iSubsets)){
 		dY <- yHat - Ynew
 		se <- (1/length(Xnew))*sum(dY*dY)
 		xvalErr[isize,isets] <- xvalErr[isize,isets] + se/nxval
-		
 	}
-	
 }
-
-
-
 
 #let's have a look at the xvalErr
 xvalErr
-
-
 
 #collect all the non-zero elements of xvalErr and plot according to subset size
 output <- matrix(0.0,1,2)
@@ -188,7 +182,6 @@ for(i in 1:7){
 	}
 }
 plot(output)
-
 
 #Forward Step-wise - using cross-validation for variable selection.  
 #Pick the first variable
