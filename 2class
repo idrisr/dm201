@@ -1,0 +1,73 @@
+Datamining 201 Notes
+===========================
+
+Day 2
+--------------------------
+
+HW 1 Review
+-------------------------------------------
+Out of sample data is to generate the entire error curve
+Look into how to use of out of sample data in k-fold cross validations
+
+lars and lasso both use lars library
+
+another way to do subset selection is by rearranging the columns
+
+the points of doing cross validation is to resolve model complexity
+
+dont use the out of sample data too early otherwise you can't use it later to
+resolve model complexity
+
+http://stackoverflow.com/questions/7619700/10-fold-cross-validation
+
+
+
+Quadratic Penalty vs L1 Penalty
+-----------------------------------------
+lasso, ridge
+
+Ridge Regression
+----------------------------------------
+in the family of coefficient penalty algos, they tend to perform well.
+
+Lasso throws a bunch of stuff away which can be useful
+
+See pg 62 and error bars.
+See formula 3.41
+
+pick β to minimize the least square regressions
+the end part with λ is the penalty. With a large λ, the β's go away and it's
+like you're ignoring all input data.o
+
+Book examples assume x and y scaled to mean=0 and sd=1
+(the matrix forms are centered. But not 3.41)
+
+if there are no means, then you have an intercept that is an additional
+parameter that is not included in the penalty term. You don't want to penalize
+the intercept. YOu don't want the technique to be effect by offsets or units
+
+3.4.4 is very close to the least squares answer
+
+THe large eigenvalues of X are less effected by the λ then the small
+eigenvalues.
+
+We get sparse solutions for ridge and never for lasso. See figure 3.11
+We get sparse solutions for lasso and never for ridge. See figure 3.11
+
+
+Elastic Net - Ridge-Lasso Hybrid
+-------------------------------------------------------------------
+Elastic Net Penalty - eq. 3.54
+
+α shift then penalty between L1 and L2
+
+L1 - ridge or lasso ?
+L2 - ridge or lasso ?
+
+Least Angle Regression
+-------------------------------------------------------------------
+
+Forward Stagewise Linear Regression
+-------------------------------------------------------------------
+Page 608 of book
+Train a weak learner, get a residual, and then fit something else??
