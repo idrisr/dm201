@@ -5,6 +5,9 @@
 
 
 # setwd("/home/mike-bowles/Documents/StatisticsPapers/ESL/DataSets/Prostate")
+
+# ****************** READ DATA ************************************************
+
 setwd("/home/id/learning/dm201/1class_knn_reg/data/")
 pdata <- read.table(file="prostate", header = TRUE, row.names=1)
 
@@ -14,6 +17,8 @@ X <- pdata[,1:8]
 Y <- pdata[,9]
 #pull out indices which authors used as training set
 Itrain <- which(pdata[,10])
+
+# ****************** Put into matrix form and scale **************************
 
 #demean X and bring to unit variance
 for(i in 1:length(names(X))){
@@ -43,11 +48,7 @@ linMod <- lm(YY ~ XX)
 linMod
 
 
-######################
-#######################
-#best subsets
-##############
-##########
+# ****************** get best input subsets  **************************
 
 require(leaps)
 
@@ -72,7 +73,7 @@ colIndex <- 1:8
 for(isize in 2:8){
 	iSubsets <- which(rownames(w)[]==num2char[isize])
 	
-#start a loop to run though best subsets
+    #start a loop to run though best subsets
 	for(isets in 1:length(iSubsets)){
 		iCol <- which(w[iSubsets[isets],])
 		Xtemp <- as.matrix(X[,iCol])		
@@ -80,7 +81,7 @@ for(isize in 2:8){
 		nxval <- 10
 		Index <- 1:length(X[,1])
 
-#crossvalidation
+        #crossvalidation
 		for(ixval in 1:nxval){
 			Iout <- which(Index%%nxval==(ixval-1))
 			XtempTemp <- Xtemp[-Iout,1:ncol(Xtemp)]
@@ -95,16 +96,12 @@ for(isize in 2:8){
 				for(j in 1:isize){
 					yHat[i] <- yHat[i] + Xnew[i,j]*v[j+1]
 				}
-				
 			}
 			dY <- yHat - Ynew
 			se <- (1/length(Xnew[,1]))*sum(dY*dY)
 			xvalErr[isize,isets] <- xvalErr[isize,isets] + se/nxval
-			
 		}
-
 	}
-
 }
 
 #run separate for subset size = 1
@@ -112,11 +109,10 @@ isize <- 1
 iSubsets <- which(rownames(w)[]==num2char[isize])
 
 #start a loop to run though best subsets
+# significant repeat of #loop on different subset sizes
 for(isets in 1:length(iSubsets)){
 	iCol <- which(w[iSubsets[isets],])
 	Xtemp <- as.matrix(X[,iCol])	
-	
-	
 	
 	nxval <- 10
 	Index <- 1:length(X[,1])
@@ -135,23 +131,15 @@ for(isets in 1:length(iSubsets)){
 			for(j in 1:isize){
 				yHat[i] <- yHat[i] + Xnew[i]*v[j+1]
 			}
-			
 		}
 		dY <- yHat - Ynew
 		se <- (1/length(Xnew))*sum(dY*dY)
 		xvalErr[isize,isets] <- xvalErr[isize,isets] + se/nxval
-		
 	}
-	
 }
-
-
-
 
 #let's have a look at the xvalErr
 xvalErr
-
-
 
 #collect all the non-zero elements of xvalErr and plot according to subset size
 output <- matrix(0.0,1,2)
