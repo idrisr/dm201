@@ -1,0 +1,3130 @@
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+1
+
+Least Angle Regression, Forward
+Stagewise and the Lasso
+Brad Efron, Trevor Hastie, Iain Johnstone and Robert Tibshirani
+Stanford University
+
+Annals of Statistics, 2004 (with discussion)
+
+http://www-stat.stanford.edu/∼tibs
+&
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+2
+
+Background
+• Today’s talk is about linear regression
+• But the motivation comes from the area of ﬂexible function
+ﬁtting: “Boosting”— Freund & Schapire (1995)
+
+&
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+3
+
+Least Squares Boosting
+Friedman, Hastie & Tibshirani — see Elements of Statistical
+Learning (chapter 10)
+Supervised learning: Response y, predictors x = (x1 , x2 . . . xp ).
+1. Start with function F (x) = 0 and residual r = y
+2. Fit a CART regression tree to r giving f (x)
+3. Set F (x) ← F (x) + f (x), r ← r − f (x) and repeat step 2
+many times
+&
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+4
+
+Least Squares Boosting
+Prediction Error
+
+Single tree
+
+rag replacements
+=1
+
+= .01
+
+Number of steps
+
+&
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+Linear Regression
+
+$
+5
+
+Here is a version of least squares boosting for multiple linear
+regression: (assume predictors are standardized)
+(Incremental) Forward Stagewise
+1. Start with r = y, β1 , β2 , . . . βp = 0.
+2. Find the predictor xj most correlated with r
+3. Update βj ← βj + δj , where δj = · sign r, xj
+4. Set r ← r − δj · xj and repeat steps 2 and 3 many times
+δj = r, xj gives usual forward stagewise; diﬀerent from forward
+stepwise
+Analogous to least squares boosting, with trees=predictors
+&
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+6
+
+Prostate Cancer Data
+Lasso
+
+Forward Stagewise
+lcavol
+
+0.6
+0.4
+0.2
+
+Coeﬃcients
+
+0.4
+0.2
+
+gleason
+
+svi
+lweight
+pgg45
+lbph
+
+0.0
+
+placements
+
+svi
+lweight
+pgg45
+lbph
+
+0.0
+
+Coeﬃcients
+
+0.6
+
+lcavol
+
+gleason
+
+age
+
+-0.2
+
+-0.2
+
+age
+
+lcp
+
+0.0
+
+&
+
+0.5
+
+1.0
+
+P 1.5 2.0
+t = j |βj |
+
+2.5
+
+lcp
+
+0
+
+50
+
+100
+
+150
+
+200
+
+Iteration
+
+250
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+7
+
+Linear regression via the Lasso (Tibshirani, 1995)
+• Assume y = 0, xj = 0, Var(xj ) = 1 for all j.
+¯
+¯
+• Minimize
+
+i (yi
+
+−
+
+j
+
+xij βj )2 subject to
+
+j
+
+|βj | ≤ s
+
+• With orthogonal predictors, solutions are soft thresholded
+version of least squares coeﬃcients:
+ˆ
+ˆ
+sign(βj )(|βj | − γ)+
+(γ is a function of s)
+• For small values of the bound s, Lasso does variable selection.
+See pictures
+&
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+8
+
+Lasso and Ridge regression
+
+β2
+
+^
+β
+
+.
+
+β2
+
+β1
+
+&
+
+^
+β
+
+.
+
+β1
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+9
+
+More on Lasso
+• Current implementations use quadratic programming to
+compute solutions
+• Can be applied when p > n. In that case, number of non-zero
+coeﬃcients is at most n − 1 (by convex duality)
+• interesting consequences for applications, eg microarray data
+
+&
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+10
+
+Diabetes Data
+Lasso
+
+Stagewise
+
+3
+6
+
+9
+
+500
+
+500
+
+9
+
+3
+6
+
+ˆ
+βj
+
+••
+
+39
+
+• •
+
+4 7
+
+• ••
+
+2 10
+5
+
+8
+7
+10
+1
+
+• ••
+
+8 61
+
+4
+8
+7
+10
+1
+
+0
+
+0
+
+4
+
+••
+
+39
+
+• •
+
+4 7
+
+• ••
+
+2 10
+5
+
+• •
+•
+
+8 1
+6
+
+2
+
+-500
+
+placements
+
+-500
+
+2
+
+5
+
+P ˆ
+|βj | →
+
+&
+
+0
+
+1000
+
+P2000
+ˆ
+t=
+|βj | →
+
+3000
+
+5
+
+0
+
+1000
+
+P2000
+ˆ
+t=
+|βj | →
+
+3000
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+11
+
+Why are Forward Stagewise and Lasso so similar?
+• Are they identical?
+• In orthogonal predictor case: yes
+• In hard to verify case of monotone coeﬃcient paths: yes
+• In general, almost!
+• Least angle regression (LAR) provides answers to these
+questions, and an eﬃcient way to compute the complete Lasso
+sequence of solutions.
+&
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+Least Angle Regression — LAR
+
+$
+12
+
+Like a “more democratic” version of forward stepwise regression.
+ˆ ˆ
+ˆ
+1. Start with r = y, β1 , β2 , . . . βp = 0. Assume xj standardized.
+2. Find predictor xj most correlated with r.
+3. Increase βj in the direction of sign(corr(r, xj )) until some
+other competitor xk has as much correlation with current
+residual as does xj .
+ˆ ˆ
+4. Move (βj , βk ) in the joint least squares direction for (xj , xk )
+until some other competitor x has as much correlation with
+the current residual
+5. Continue in this way until all predictors have been entered.
+Stop when corr(r, xj ) = 0 ∀ j, i.e. OLS solution.
+&
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+x2
+
+13
+
+x2
+
+rag replacements
+
+¯
+y2
+u2
+ˆ
+µ0
+
+ˆ
+µ1
+
+x1
+
+¯
+y1
+
+The LAR direction u2 at step 2 makes an equal angle with x1 and
+x2 .
+&
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+14
+
+20000
+
+LARS
+
+15000
+
+3
+6
+
+••
+
+3
+9
+
+• •
+
+4 7
+
+• ••
+
+2 10
+5
+
+8
+7
+10
+1
+
+• ••
+
+8 61
+
+|ˆkj |
+c
+
+ˆ
+βj
+
+placements
+
+0
+
+4
+
+5000
+
+2
+
+-500
+
+3•
+9
+
+9
+
+•
+
+4
+8
+
+ˆ
+Ck
+
+7
+10
+
+10000
+
+500
+
+9
+
+4
+
+•
+
+7
+
+5
+1
+6
+
+•
+
+2
+
+•
+2
+
+0
+
+&
+
+1000
+
+2000
+P ˆ
+|βj | →
+
+3000
+
+5
+
+•
+
+8
+
+•
+
+0
+
+5
+
+10
+
+•
+
+2
+
+4
+
+6
+
+8
+
+6
+
+•
+
+1
+
+•
+
+10
+
+Step k →
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+Relationship between the 3 algorithms
+
+$
+15
+
+• Lasso and forward stagewise can be thought of as restricted
+versions of LAR
+• For Lasso: Start with LAR. If a coeﬃcient crosses zero, stop.
+Drop that predictor, recompute the best direction and
+continue. This gives the Lasso path
+Proof (lengthy): use Karush-Kuhn-Tucker theory of convex
+optimization. Informally:
+∂
+||y − Xβ||2
+∂βj
+
++
+
+λ
+
+|βj | } = 0
+j
+
+⇔
+xj , r
+&
+
+=
+
+λ
+ˆ
+sign(βj )
+2
+
+ˆ
+if βj = 0 (active)
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+16
+
+• For forward stagewise: Start with LAR. Compute best (equal
+angular) direction at each stage. If direction for any predictor j
+doesn’t agree in sign with corr(r, xj ), project direction into the
+“positive cone” and use the projected direction instead.
+• in other words, forward stagewise always moves each predictor
+in the direction of corr(r, xj ).
+• The incremental forward stagewise procedure approximates
+these steps, one predictor at a time. As step size → 0, can
+show that it coincides with this modiﬁed version of LAR
+
+&
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+17
+
+More on forward stagewise
+• Let A be the active set of predictors at some stage. Suppose
+the procedure takes M =
+Mj steps of size in these
+predictors, Mj in predictor j (Mj = 0 for j ∈ A).
+/
+ˆ
+ˆ
+• Then β is changed to β + (s1 M1 /M, s2 M2 /M, · · · sp Mp /M )
+where sj = sign(corr(r, xj ))
+• θ = (M1 /M, · · · Mp /M ) satisﬁes
+xij sj θj )2 ,
+
+(ri −
+
+θ = argmin
+i
+
+j∈A
+
+subject to θj ≥ 0 for all j. This is a non-negative least squares
+estimate.
+&
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+18
+
+SA
+x3
+
+rag replacements
+CA
+
++
+SA
+
+x2
+x1
+
+vB
+ˆ
+
++
+SB
+
+vA
+
+The forward stagewise direction lies in the positive cone spanned
+by the (signed) predictors with equal correlation with the current
+residual.
+&
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+19
+
+Summary
+• LARS—uses least squares directions in the active set of variables.
+• Lasso—uses least square directions; if a variable crosses zero, it is
+removed from the active set.
+• Forward stagewise—uses non-negative least squares directions in
+the active set.
+
+&
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+Beneﬁts
+
+$
+20
+
+• Possible explanation of the beneﬁt of “slow learning” in
+boosting: it is approximately ﬁtting via an L1 (lasso) penalty
+• new algorithm computes entire Lasso path in same order of
+computation as one full least squares ﬁt. Splus/R Software on
+Hastie’s website:
+www-stat.stanford.edu/∼hastie/Papers#LARS
+• Degrees of freedom formula for LAR:
+After k steps, degrees of freedom of ﬁt = k (with some
+regularity conditions)
+• For Lasso, the procedure often takes > p steps, since predictors
+can drop out. Corresponding formula (conjecture):
+Degrees of freedom for last model in sequence with k predictors
+is equal to k.
+&
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+21
+
+Degrees of freedom
+
+•
+
+10
+
+60
+
+•
+50
+
+•
+•
+
+df estimate
+
+df estimate
+
+8
+•
+
+6
+•
+•
+
+4
+
+30
+20
+
+•
+
+10
+
+•
+
+2
+
+40
+
+•
+0
+
+•
+••
+••
+••
+••
+•
+••
+••
+••
+•••
+••
+••
+••
+•
+••
+••
+•••
+•••
+•••
+•••
+•••
+•••
+•
+•••
+••
+••
+•••
+•
+••
+••
+
+0
+0
+
+&
+
+2
+
+4
+
+6
+step k-->
+
+8
+
+10
+
+0
+
+10
+
+20
+
+30 40
+step k-->
+
+50
+
+60
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+Degree of Freedom result
+
+$
+22
+
+n
+
+cov(ˆi , yi )/σ 2 = k
+µ
+
+df(ˆ) ≡
+µ
+i=1
+
+Proof is based on is an application of Stein’s unbiased risk estimate
+(SURE). Suppose that g : Rn → Rn is almost diﬀerentiable and set
+n
+· g = i=1 ∂gi /∂xi . If y ∼ Nn (µ, σ 2 I), then Stein’s formula
+states that
+n
+
+cov(gi , yi )/σ 2 = E[
+
+· g(y)].
+
+i=1
+
+LHS is degrees of freedom. Set g(·) equal to the LAR estimate. In
+orthogonal case, ∂gi /∂xi is 1 if predictor is in model, 0 otherwise.
+Hence RHS equals number of predictors in model (= k).
+Non-orthogonal case is much harder.
+&
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+23
+
+Software for R and Splus
+lars() function ﬁts all three models: lasso, lar or
+forward.stagewise. Methods for prediction, plotting, and
+cross-validation. Detailed documentation provided. Visit
+www-stat.stanford.edu/∼hastie/Papers/#LARS
+Main computations involve least squares ﬁtting using the active set
+of variables. Computations managed by updating the Choleski R
+matrix (and frequent downdating for lasso and forward stagewise).
+
+&
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+24
+
+MicroArray Example
+• Expression data for 38 Leukemia patients (“Golub” data).
+• X matrix with 38 samples and 7129 variables (genes)
+• Response Y is dichotomous ALL (27) vs AML (11)
+• LARS (lasso) took 4 seconds in R version 1.7 on a 1.8Ghz Dell
+workstation running Linux.
+• In 70 steps, 52 variables ever non zero, at most 37 at a time.
+
+&
+
+%
+
+'
+
+January 2005
+
+25
+
+0.6
+
+*
+*
+
+*
+**
+
+* ** * * ***** * *
+** *** *
+** * * * **
+* * ** ** * * * *
+**
+**
+* **
+***
+**
+*
+* * ** ** * *
+* * **
+* **
+** *
+** ****
+**
+** * * * * *** * * ***
+*** **
+* **
+*
+
+2267
+
+0.8
+
+LASSO
+
+*
+**
+
+*
+**
+
+*
+0.2
+
+*
+
+*
+
+*
+*
+*
+
+* *
+
+*
+
+*
+*
+
+*
+**
+**
+*
+*
+*
+
+−0.2
+
+**
+*
+
+0.0
+
+&
+
+0.2
+
+0.4
+
+* **
+** *
+**
+** * *
+**
+*
+** * **
+*
+**
+**
+* * ** * ** **
+*
+* *
+* **
+* ** * * * * ** * ** **
+* * **
+* **
+*
+**
+*
+* ** * * * * ** * ** **
+**
+** **
+** * * * ** * ** **
+* ** * ****
+* * ** **
+* ** ** * * ** * ** **
+** **
+*
+*
+** **
+*
+**
+**
+*
+* ** ** * * *
+**
+*
+**
+** * **
+**
+0.6
+
+|beta|/max|beta|
+
+**
+**
+* * *** **
+** *
+* ** **
+* * * ** *
+* * * ** **
+*
+* *** **
+*
+** * ** **
+* * * * **
+*
+* * ** **
+* * * **
+** * **
+* **
+* * *** **
+** * ** **
+**
+* **
+* * ** **
+*
+* * * ** **
+*
+* * ** **
+* ** **
+* ** **
+**
+
+0.8
+
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+
+*
+*
+*****
+** ** ** * ** *
+** ** * *
+** *
+***** *** ** ***
+* ** **
+***** * *
+* * ****** *
+* ** ****
+* *
+* **** * * **
+***** **** * ****
+**** * * *
+* * * ****
+** **
+* ** * * * *
+* **
+** *
+***** *** ** ***
+* *
+*
+* ** * *
+** ** ** ** *
+***** **** * ****
+***** *** ** ****
+* ** ** * * *
+***** *** ** ****
+** ** ** * ***
+* ** ** ** *
+** * * *
+**** * * ***
+*
+***** * * ** ***
+** ** ** *
+* * **
+* **** ** * *
+*** ***** * ***
+***** **** * ****
+*** * * * * ***
+* ** ** *
+** * *
+***** **** * ****
+* **
+**** **** ** ****
+* ** *** **
+***** **** * **
+* **
+*** * ** ****
+*** ** ****
+* * **
+**
+*****
+* ** * **
+**
+** ** * * *
+**** **** * ****
+* ***
+* * * *** ** * *
+** ***
+* * ** *
+**** *
+
+461
+
+*
+
+2968 6801 2945
+
+0.4
+
+*
+
+0.0
+
+Standardized Coefficients
+
+$
+
+Rob Tibshirani, Stanford
+
+1.0
+
+%
+
+'
+
+January 2005
+
+26
+
+LASSO
+3
+
+4
+
+5
+
+*
+**
+0.6
+
+*
+*
+
+*
+**
+
+8
+
+12
+
+15
+
+20
+
+26
+
+31
+
+38
+
+50 65
+
+* ** * * ***** * *
+** *** *
+** * * * **
+* * ** ** * * * *
+**
+**
+* **
+***
+**
+*
+* * ** ** * *
+* * **
+* **
+** *
+** ****
+**
+** * * * * *** * * ***
+*** **
+* **
+*
+
+2267
+
+1
+
+0.8
+
+0
+
+*
+**
+
+*
+0.2
+
+*
+
+*
+
+*
+*
+*
+
+* *
+
+*
+
+*
+*
+
+*
+**
+**
+*
+*
+*
+
+−0.2
+
+**
+*
+
+0.0
+
+&
+
+0.2
+
+0.4
+
+* **
+** *
+**
+** * *
+**
+*
+** * **
+*
+**
+**
+* * ** * ** **
+*
+* *
+* **
+* ** * * * * ** * ** **
+* * **
+* **
+*
+**
+*
+* ** * * * * ** * ** **
+**
+** **
+** * * * ** * ** **
+* ** * ****
+* * ** **
+* ** ** * * ** * ** **
+** **
+*
+*
+** **
+*
+**
+**
+*
+* ** ** * * *
+**
+*
+**
+** * **
+**
+0.6
+
+|beta|/max|beta|
+
+**
+**
+* * *** **
+** *
+* ** **
+* * * ** *
+* * * ** **
+*
+* *** **
+*
+** * ** **
+* * * * **
+*
+* * ** **
+* * * **
+** * **
+* **
+* * *** **
+** * ** **
+**
+* **
+* * ** **
+*
+* * * ** **
+*
+* * ** **
+* ** **
+* ** **
+**
+
+0.8
+
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+
+*
+*
+*****
+** ** ** * ** *
+** ** * *
+** *
+***** *** ** ***
+* ** **
+***** * *
+* * ****** *
+* ** ****
+* *
+* **** * * **
+***** **** * ****
+**** * * *
+* * * ****
+** **
+* ** * * * *
+* **
+** *
+***** *** ** ***
+* *
+*
+* ** * *
+** ** ** ** *
+***** **** * ****
+***** *** ** ****
+* ** ** * * *
+***** *** ** ****
+** ** ** * ***
+* ** ** ** *
+** * * *
+**** * * ***
+*
+***** * * ** ***
+** ** ** *
+* * **
+* **** ** * *
+*** ***** * ***
+***** **** * ****
+*** * * * * ***
+* ** ** *
+** * *
+***** **** * ****
+* **
+**** **** ** ****
+* ** *** **
+***** **** * **
+* **
+*** * ** ****
+*** ** ****
+* * **
+**
+*****
+* ** * **
+**
+** ** * * *
+**** **** * ****
+* ***
+* * * *** ** * *
+** ***
+* * ** *
+**** *
+
+461
+
+*
+
+2968 6801 2945
+
+0.4
+
+*
+
+0.0
+
+Standardized Coefficients
+
+$
+
+Rob Tibshirani, Stanford
+
+1.0
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+27
+
+0.15
+0.05
+
+0.10
+
+cv
+
+0.20
+
+0.25
+
+10−fold cross−validation for Leukemia Expression Data (Lasso)
+
+0.0
+
+&
+
+0.2
+
+0.4
+
+0.6
+fraction
+
+0.8
+
+1.0
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+28
+
+*
+
+0.0
+
+*
+*
+* **
+
+*
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+*
+** *
+*
+** *
+**
+** *
+** *
+*
+** *
+** *
+* *
+** *
+** *
+** *
+**
+** *
+** *
+** *
+** *
+** *
+
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+*
+**
+**
+**
+**
+**
+**
+
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+*
+**
+**
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+**
+* *
+* *
+
+*
+
+0.0
+
+&
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+5039
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+*
+*
+*
+*
+
+2534
+
+*
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+1241
+
+0.5
+
+*
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+−0.5
+
+Standardized Coefficients
+
+*
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+*
+
+*
+
+*
+* * *
+** **
+
+1817 4328
+
+*
+* *
+**
+
+6895
+
+**
+**** *
+*
+*
+**
+** *
+*
+*
+**** * * *
+* **
+*
+**
+*
+*
+** * ** *
+***
+*
+*
+*
+** * * *
+*
+** * * *
+*
+** **** * * *
+*
+** ******* * *
+*
+*
+* ** *** * * *
+*
+* ** ** * * ** * * *
+** *
+****** * * *
+* ****** *
+* ** ** ******* *
+** ** ** **** *
+****** *
+**** *
+***** *
+** **** * *
+*
+** **
+*
+* **
+**
+** ****** * * *
+**
+**
+***
+*
+*
+
+*
+
+1882
+
+*
+** **
+* * * *
+**
+* *
+*
+
+2267
+
+1.0
+
+LAR
+
+0.2
+
+0.4
+
+0.6
+
+|beta|/max|beta|
+
+0.8
+
+1.0
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+29
+
+LAR
+4
+
+8
+
+13
+
+20
+
+25 29
+
+32
+
+35
+
+36
+
+37
+*
+
+*
+* *
+**
+
+*
+
+0.0
+
+*
+*
+* **
+
+*
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+*
+** *
+*
+** *
+**
+** *
+** *
+*
+** *
+** *
+* *
+** *
+** *
+** *
+**
+** *
+** *
+** *
+** *
+** *
+
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+*
+**
+**
+**
+**
+**
+**
+
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+*
+**
+**
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+**
+* *
+* *
+
+*
+
+0.0
+
+&
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+5039
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+*
+*
+*
+*
+
+2534
+
+*
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+1241
+
+0.5
+
+*
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+−0.5
+
+Standardized Coefficients
+
+*
+
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+
+*
+
+*
+
+*
+* * *
+** **
+
+1817 4328
+
+*
+
+6895
+
+**
+**** *
+*
+*
+**
+** *
+*
+*
+**** * * *
+* **
+*
+**
+*
+*
+** * ** *
+***
+*
+*
+*
+** * * *
+*
+** * * *
+*
+** **** * * *
+*
+** ******* * *
+*
+*
+* ** *** * * *
+*
+* ** ** * * ** * * *
+** *
+****** * * *
+* ****** *
+* ** ** ******* *
+** ** ** **** *
+****** *
+**** *
+***** *
+** **** * *
+*
+** **
+*
+* **
+**
+** ****** * * *
+**
+**
+***
+*
+*
+
+** **
+* * * *
+**
+* *
+*
+
+1882
+
+3
+
+2267
+
+2
+
+1.0
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+|beta|/max|beta|
+
+0.8
+
+1.0
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+30
+
+0.15
+0.05
+
+0.10
+
+cv
+
+0.20
+
+0.25
+
+10−fold cross−validation for Leukemia Expression Data (LAR)
+
+0.0
+
+&
+
+0.2
+
+0.4
+
+0.6
+fraction
+
+0.8
+
+1.0
+
+%
+
+'
+
+January 2005
+
+31
+
+* * **** * * ****** ** ** ** ***********
+** ** * *
+* ***** ** ********
+
+**
+**
+
+* * **** * * ****** ** ** ** ***********
+** ** * *
+* ***** ** ********
+
+*
+
+* ** *
+
+**
+**
+
+* * **** * * ****** ** ** ** ***********
+** ** * *
+* ***** ** ********
+
+**
+**
+
+*
+
+*
+
+**
+
+*
+**
+
+0.4
+
+*
+*
+
+*
+**
+
+1834
+
+0.6
+
+*
+
+2267
+
+**
+**
+
+*
+* **
+
+1882
+
+Forward Stagewise
+
+*
+**
+
+*
+
+*
+
+0.0
+
+*
+
+*
+
+* *
+
+*
+
+*
+
+*
+**
+**
+*
+*
+*
+
+−0.2
+
+**
+*
+
+0.0
+
+&
+
+0.2
+
+0.4
+
+*
+*
+*
+*
+*
+*
+*
+
+*
+**
+**
+*
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+
+*
+*
+
+**
+**
+**
+**
+
+*
+
+* **
+**
+* *
+*
+*
+* **
+* *
+**
+*
+**
+* **
+
+* * **** * *
+** ** * *
+*
+***** * *
+* ** * *
+* * **** * *
+** * *
+* * **
+* *
+* ** *
+* **
+* **** * *
+** *
+* ** **
+* * **** * *
+* * * *
+* *
+** ** * *
+* * **** * *
+* * ** *
+* **** * *
+* *
+* * **** * *
+** ** * *
+* ** *
+** *** * *
+* *
+* * * *** * *
+*
+**
+* ***
+* ** *
+* *
+* * **** * *
+** ** * *
+
+* * **** * * ****** ** ** ** ***********
+** ** * *
+* ***** ** ********
+
+0.6
+
+|beta|/max|beta|
+
+****** ** ** ** ***********
+* ***** ** ********
+********
+* ***** ** **********
+* ***** ** ** ** *
+****** ** ** ** ***********
+*
+**** ***** ** ********
+*
+*****
+* * ** ** *****
+* ***** ** ***********
+****** ***** ** ***********
+** *
+* ***** ** ** *************
+* ** ** ************
+* * ** ** *****
+***** ** ** *************
+***** ****
+* ***
+* ***** ** * * *************
+* *
+* ***** ***** **************
+* ** * ** ********
+***** *** *** ********
+* ***** ***** ** ***********
+* * * * ********
+* *** *** * ** ********
+** ***
+****** * **** ** *********
+* *
+*
+* ***** ***** ** ***********
+* *
+** * ***** * ********
+***** ** ** ** ********
+* ***** ** ** ** ********
+****** ** ** ** ***********
+****** ***** ** ***********
+* **
+***** **** ** ***********
+* **
+***** ** * ** ********
+*** ***
+* **** ** ** ************
+**
+* * ***
+* ***** ** ********
+*** ** ** ** ***********
+******
+***
+****** ** ** ** ***********
+* ***** ** ********
+****** ** ** ** ***********
+* ***** ** ********
+
+0.8
+
+4535 4399 87 2774
+
+*
+
+461
+
+*
+0.2
+
+Standardized Coefficients
+
+$
+
+Rob Tibshirani, Stanford
+
+1.0
+
+%
+
+'
+
+January 2005
+
+32
+
+Forward Stagewise
+4
+
+5
+
+8
+
+12
+
+19
+
+29
+
+43 54 82 121
+
+**
+**
+
+* * **** * * ****** ** ** ** ***********
+** ** * *
+* ***** ** ********
+
+**
+**
+
+* * **** * * ****** ** ** ** ***********
+** ** * *
+* ***** ** ********
+
+*
+
+* ** *
+
+**
+**
+
+* * **** * * ****** ** ** ** ***********
+** ** * *
+* ***** ** ********
+
+**
+**
+
+*
+**
+
+*
+* **
+
+*
+
+0.6
+
+15
+
+*
+
+*
+
+**
+
+*
+**
+*
+
+0.4
+
+1882
+
+3
+
+2267
+
+1
+
+*
+
+*
+**
+
+1834
+
+0
+
+*
+
+*
+
+0.0
+
+*
+
+*
+
+* *
+
+*
+
+*
+
+*
+**
+**
+*
+*
+*
+
+−0.2
+
+**
+*
+
+0.0
+
+&
+
+0.2
+
+0.4
+
+*
+*
+*
+*
+*
+*
+*
+
+*
+**
+**
+*
+**
+**
+**
+**
+**
+**
+**
+**
+**
+**
+
+*
+*
+
+**
+**
+**
+**
+
+*
+
+* **
+**
+* *
+*
+*
+* **
+* *
+**
+*
+**
+* **
+
+* * **** * *
+** ** * *
+*
+***** * *
+* ** * *
+* * **** * *
+** * *
+* * **
+* *
+* ** *
+* **
+* **** * *
+** *
+* ** **
+* * **** * *
+* * * *
+* *
+** ** * *
+* * **** * *
+* * ** *
+* **** * *
+* *
+* * **** * *
+** ** * *
+* ** *
+** *** * *
+* *
+* * * *** * *
+*
+**
+* ***
+* ** *
+* *
+* * **** * *
+** ** * *
+
+* * **** * * ****** ** ** ** ***********
+** ** * *
+* ***** ** ********
+
+0.6
+
+|beta|/max|beta|
+
+****** ** ** ** ***********
+* ***** ** ********
+********
+* ***** ** **********
+* ***** ** ** ** *
+****** ** ** ** ***********
+*
+**** ***** ** ********
+*
+*****
+* * ** ** *****
+* ***** ** ***********
+****** ***** ** ***********
+** *
+* ***** ** ** *************
+* ** ** ************
+* * ** ** *****
+***** ** ** *************
+***** ****
+* ***
+* ***** ** * * *************
+* *
+* ***** ***** **************
+* ** * ** ********
+***** *** *** ********
+* ***** ***** ** ***********
+* * * * ********
+* *** *** * ** ********
+** ***
+****** * **** ** *********
+* *
+*
+* ***** ***** ** ***********
+* *
+** * ***** * ********
+***** ** ** ** ********
+* ***** ** ** ** ********
+****** ** ** ** ***********
+****** ***** ** ***********
+* **
+***** **** ** ***********
+* **
+***** ** * ** ********
+*** ***
+* **** ** ** ************
+**
+* * ***
+* ***** ** ********
+*** ** ** ** ***********
+******
+***
+****** ** ** ** ***********
+* ***** ** ********
+****** ** ** ** ***********
+* ***** ** ********
+
+0.8
+
+4535 4399 87 2774
+
+*
+
+461
+
+*
+0.2
+
+Standardized Coefficients
+
+$
+
+Rob Tibshirani, Stanford
+
+1.0
+
+%
+
+'
+
+January 2005
+
+$
+
+Rob Tibshirani, Stanford
+
+33
+
+0.15
+0.05
+
+0.10
+
+cv
+
+0.20
+
+0.25
+
+10−fold cross−validation for Leukemia Expression Data (Stagewise)
+
+0.0
+
+&
+
+0.2
+
+0.4
+
+0.6
+fraction
+
+0.8
+
+1.0
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+$
+34
+
+A new result
+(Hastie, Taylor, Tibshirani, Walther)
+Criterion for forward stagewise
+2
+
+Minimize
+Subject to
+
+&
+
+yi −
+
+i
+j
+
+t
+0
+
+j
+
+xij βj (t)
+
+|βj (s)|ds ≤ t (Bounded L1 arc-length)
+
+%
+
+'
+
+January 2005
+
+Rob Tibshirani, Stanford
+
+Future directions
+
+$
+35
+
+• use ideas to make better versions of boosting (Friedman and
+Popescu)
+• Application to support vector machines (Zhu, Rosset, Hastie,
+Tibshirani)
+• “fused lasso”:
+ˆ
+β = argmin
+
+xij βj )2
+
+(yi −
+i
+
+j
+p
+
+subject to
+
+|βj | ≤ s1
+j=1
+
+p
+
+and
+
+|βj − βj−1 | ≤ s2
+j=2
+
+Has applications to microarrays and protein mass spec
+&
+
+%
+
+
