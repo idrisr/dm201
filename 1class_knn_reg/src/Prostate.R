@@ -161,7 +161,6 @@ plot(output)
 
 #Forward Step-wise - using cross-validation for variable selection.  
 #Pick the first variable
-
 Index <- 1:nrow(X)
 colIndex <- 1:8
 seBest <- 1000000.0
@@ -169,6 +168,7 @@ seArray <- rep(0.0, 7)
 Xtemp <- X[, 1]
 nxval <- 10
 
+# get first best feature
 for(iTry in 1:8){
     # iTry <- 2
     # grab one column
@@ -209,6 +209,7 @@ I <- iBest
 
 
 #run through the same calculation for the next 6 variables
+# get the 2nd-7th inputs, 8th is the one remaining
 for(iStep in 1:6){
 	colSelection <- colIndex[-I]
 	seBest <- 1000000
