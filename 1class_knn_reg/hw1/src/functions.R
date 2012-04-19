@@ -1,5 +1,8 @@
 
 stepwise.lm <- function(data, Xi_name, Yi_name) {
+    # UNTESTED # UNTESTED # UNTESTED # UNTESTED # UNTESTED
+    # UNTESTED # UNTESTED # UNTESTED # UNTESTED # UNTESTED
+    # UNTESTED # UNTESTED # UNTESTED # UNTESTED # UNTESTED
     # TODO: expand comment
     Xi_cand <- names(data)[which(!(names(data) %in% c(Xi_name, Yi_name)))]
     for (x in Xi_cand){

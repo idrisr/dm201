@@ -22,14 +22,19 @@ test_that('standard error is right', {
           set.seed(234)
           df <- data.frame(x=1:5, y=runif(5))
           lm_model <- lm(y~x, df)
-
           # reg slope
+          # TODO: make this code snippet a blog post. From reg to matrix form
           b <- with(df, sum((x-mean(x)) * (y-mean(y))) / sum((x-mean(x))^2))
-
           # reg intercept
           a <- with(df, mean(y) - b*mean(x))
-
           y_hat <- b*df$x + a
           residual <- y_hat - df$y
           expect_equal(mean(residual^2), standard_error_lm(df, lm_model))
+})
+
+test_that('best next regressor is returned', {
+          # run lm with 1 regressor. See which one comes back with the best se.
+          # that's our first regressor in forward wise
+          # then try the next best, etc
+          expect_false(TRUE)
 })
