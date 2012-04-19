@@ -1,0 +1,12 @@
+#!/bin/sh
+cd /home/id/learning/dm201/1class_knn_reg/
+Rscript -e "require(knitr); knit('src/hw1.Rnw'); "
+pdflatex hw1.tex
+rm *out
+rm *log
+rm *tex
+rm *aux
+rm *div
+rm *out
+mv hw1.pdf output
+evince output/hw1.pdf &
