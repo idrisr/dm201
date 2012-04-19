@@ -199,6 +199,8 @@ for(iTry in 1:8){
     # grab one column
 	Xtemp <- X[,iTry]
 	se <- 0.0
+
+    # Cross Validation Loop
 	for(ixval in 1:nxval){
         # CV: split training set to train and test 
 		Iout <- which(Index%%nxval == (ixval - 1))
@@ -242,6 +244,8 @@ for(iStep in 1:6){
 		iCols <- c(I,colSelection[iTry])
 		Xtemp <- as.matrix(X[,iCols])
 		se <- 0.0
+
+        #cross-validation loop
 		for(ixval in 1:nxval){
 			Iout <- which(Index%%nxval==(ixval-1))
 			XtempTemp <- Xtemp[-Iout,]
