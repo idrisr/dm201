@@ -48,7 +48,7 @@ the intercept. YOu don't want the technique to be effect by offsets or units
 
 3.4.4 is very close to the least squares answer
 
-THe large eigenvalues of X are less effected by the λ then the small
+The large eigenvalues of X are less effected by the λ then the small
 eigenvalues.
 
 We get sparse solutions for ridge and never for lasso. See figure 3.11
