@@ -17,3 +17,11 @@ split_x_y_cand <- function(data, Xi_name, Yi_name) {
     Xi_cand <- names(data)[which(!(names(data) %in% c(Xi_name, Yi_name)))]
     return(Xi_cand)
 }
+
+standard_error_lm <- function(data, lm_model) {
+    pred <- predict.lm(lm_model, data, se = TRUE)
+    residual <- pred$fit - lm_model$model[, 1]
+    # see http://en.wikipedia.org/wiki/Ordinary_least_squares#Estimation
+    se <- mean(residual^2)
+    return(se)
+}

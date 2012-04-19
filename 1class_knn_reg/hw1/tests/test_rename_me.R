@@ -1,22 +1,5 @@
 source('../src/functions.R')
 
-# test_that('forward stepwise regression next candidate', {
-          # set.seed(123)
-          # x1 <- rnorm(50)
-          # x2 <- 1:50
-          # x3 <- x1 * sin(x2)
-          # Y <- log(2)**sin(x2) + tanh(x1)
-          # data <- cbind(data.frame(scale(cbind(x1, x2, x3))), Y)
-
-          # Xi_name <- 'x1'
-          # Yi_name <- 'Y'
-
-          # a <- stepwise.lm(data, Xi_name, Yi_name)
-
-          # expect_false(a)
-          # expect_false(FALSE)
-# })
-
 test_that('candidate columns are being properly split out', {
           make_col_name <- function(x) sapply(x, function(x) 
                                               paste('X', x, sep=''))
@@ -33,4 +16,20 @@ test_that('candidate columns are being properly split out', {
 
           x_cand_name <- split_x_y_cand(df, make_col_name(1:10), 'Y')
           expect_equivalent(x_cand_name, make_col_name(c()))
+})
+
+test_that('standard error is right', {
+          set.seed(234)
+          df <- data.frame(x=1:5, y=runif(5))
+          lm_model <- lm(y~x, df)
+
+          # reg slope
+          b <- with(df, sum((x-mean(x)) * (y-mean(y))) / sum((x-mean(x))^2))
+
+          # reg intercept
+          a <- with(df, mean(y) - b*mean(x))
+
+          y_hat <- b*df$x + a
+          residual <- y_hat - df$y
+          expect_equal(mean(residual^2), standard_error_lm(df, lm_model))
 })
