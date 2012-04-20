@@ -26,7 +26,6 @@ build_df <- function() {
     df <- data.frame(x=1:5, y=runif(5))
 }
 
-
 test_that('standard error is right', {
           df <- build_df()
           lm_model <- lm(y~x, df)
@@ -43,39 +42,57 @@ test_that('standard error is right', {
 build_df2 <- function() {
     set.seed(123234)
     n <- 1000
+    cols <- 5
     y  <- 1:n
-    x1 <- y + runif(n, 0, 1)
-    x2 <- y + runif(n, 0, 10)
-    x3 <- y + runif(n, 0, 100)
-    x4 <- y + runif(n, 0, 1000)
-    x5 <- y + runif(n, 0, 10000)
-    df <- data.frame(x1, x2, x3, x4, x5, y)
+    x <- matrix(0, n, cols)
+    for(i in 1:cols){
+        x[,i] <- y + runif(n, 0, 1*(i-1))
+    }
+    df <- data.frame(x, y)
 }
 
 test_that('best next regressor is returned', {
           # run lm with 1 regressor. See which one comes back with the best se.
           # that's our first regressor in forward wise
           # then try the next best, etc
-          max_name <- function(x) names(which.max(x))
-          min_name <- function(x) names(which.min(x))
-
           df <- build_df2()
-
           se <- next_best_regressor(df, 'y', NULL)
-          expect_match(max_name(se), 'x5')
+          # expect_match(max_name(se), 'x5')
           expect_match(min_name(se), 'x1')
-
           # TODO: Need to come up with better test data to have expected subset
           # results
           # se <- next_best_regressor(df, 'y', c('x1', 'x2', 'x3'))
           # expect_match(max_name(se), 'x5') 
           # expect_match(min_name(se), 'x4')
-
-          # se <- next_best_regressor(df, 'y', c('x1', 'x3'))
-          # expect_match(max_name(se), 'x5')
-          # expect_match(min_name(se), 'x2')
-
           se <- next_best_regressor(df, 'y', c('x1', 'x2', 'x3', 'x4'))
-          expect_match('x5', max_name(se))
-          expect_match('x5', min_name(se))
+          # expect_match('x5', max_name(se))
+          expect_match(min_name(se), 'x5')
 })
+
+test_that('forward stepwise regression works!', {
+          df <- build_df2()
+          # f <- forward_stepwise_lm(df, 'y')
+          Xi_used_name <- NULL
+          se <- next_best_regressor(df, 'y', Xi_used_name)
+})
+
+test_that('cross validation at least seems like it works', {
+          df <- build_df2()
+          f <- as.formula('y ~ x1')
+          n_cv <- 10
+          se <- cross_val_lm(df, f, n_cv)
+})
+
+test_that('prostate data at least runs', {
+          setwd('/home/id/learning/dm201/1class_knn_reg/hw1/')
+          pdata <- read.table('../data/prostate')
+          pdata <- pdata[, -10]
+})
+
+pdata <- read.table('../data/prostate')[, -10]
+# temp setup
+source('../src/functions.R')
+df <- build_df2()
+f <- as.formula('y~x1')
+n_cv <- 10
+c <- cross_val_lm(df, f, n_cv)
