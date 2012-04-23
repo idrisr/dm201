@@ -84,6 +84,8 @@ test_that('cross validation at least seems like it works', {
           f <- as.formula('y ~ x1')
           n_cv <- 10
           se <- cross_val_lm(df, f, n_cv)
+          print(se)
+          # expect_true(FALSE)
 })
 
 test_that('prostate data at least runs', {

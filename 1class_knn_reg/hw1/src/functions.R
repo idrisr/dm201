@@ -12,10 +12,10 @@ split_x_y_cand <- function(data_, Yi_name, Xi_name) {
 }
 
 standard_error_lm <- function(data_, lm_model, test_i) {
+    y_name <- names(lm_model$model)[1]
     pred <- predict.lm(lm_model, data_, se = TRUE)
     # stopifnot(length(pred$fit) == lm_model$model[, 1])
-    residual <- pred$fit[test_i] - lm_model$model[test_i, 1]
-    # residual <- pred$fit - lm_model$model[, 1]
+    residual <- pred$fit[test_i] - data_[test_i, which(names(data_)==y_name)]
     # see http://en.wikipedia.org/wiki/Ordinary_least_squares#Estimation
     se <- mean(residual^2)
 }
@@ -30,7 +30,7 @@ next_best_regressor <- function(data_, Yi_name, Xi_name) {
         se[x_name] <- cross_val_lm(data_, form, n_cv)
     }
     se <- unlist(se)
-    return(se[which.min(se)])
+    # return(se[which.min(se)])
 }
 
 forward_stepwise_lm <- function(data_, Yi_name) {
