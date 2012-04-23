@@ -19,12 +19,15 @@ cross validation.
 What is the least squared error? 
 
 Which variables are included in the optimum solution?
+fixed.acidity, alcohol, volatile.acidity
 
 **********************************************************************
 
 2) Next use backward stepwise regression on the Red Wine data set 10 fold
 cross validation. What is the least squared error? Which variables are
 included in the optimum solution?
+
+**********************************************************************
 
 3) Now use all subset selection on the Red Wine data set 10 fold cross
 validation. What is the least squared error? Which variables are included in

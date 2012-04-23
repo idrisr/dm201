@@ -14,23 +14,22 @@ split_x_y_cand <- function(data_, Yi_name, Xi_name) {
 standard_error_lm <- function(data_, lm_model, test_i) {
     y_name <- names(lm_model$model)[1]
     pred <- predict.lm(lm_model, data_, se = TRUE)
-    # stopifnot(length(pred$fit) == lm_model$model[, 1])
     residual <- pred$fit[test_i] - data_[test_i, which(names(data_)==y_name)]
     # see http://en.wikipedia.org/wiki/Ordinary_least_squares#Estimation
     se <- mean(residual^2)
 }
 
-next_best_regressor <- function(data_, Yi_name, Xi_name) {
+next_regressor <- function(data_, Yi_name, Xi_name) {
     x_cand_name <- split_x_y_cand(data_, Yi_name, Xi_name)
     se <- list()
     n_cv <- 10
     for(x_name in x_cand_name){
         x_form <- paste(c(Xi_name, x_name), collapse='+')
         form <- as.formula(sprintf('%s~%s', Yi_name, x_form))
+        # print(form)
         se[x_name] <- cross_val_lm(data_, form, n_cv)
     }
     se <- unlist(se)
-    # return(se[which.min(se)])
 }
 
 forward_stepwise_lm <- function(data_, Yi_name) {
@@ -40,11 +39,41 @@ forward_stepwise_lm <- function(data_, Yi_name) {
 
     best <- list()
     for(Xi_name in Xi_cand_name){
-        next_best <- next_best_regressor(data_, Yi_name, Xi_name)
-        Xi_name <- c(Xi_name, names(next_best))
-        best[Xi_name] <- next_best
+        se <- next_regressor(data_, Yi_name, Xi_name)
+        next_regressor <- se[which.min(se)]
+        Xi_name <- c(Xi_name, names(next_regressor))
+        best[Xi_name] <- next_regressor
     }
     return(best)
+}
+
+next_regressor_back <- function(data_, Yi_name, Xi_name) {
+    x_cand_name <- split_x_y_cand(data_, Yi_name, Xi_name)
+    se <- list()
+    n_cv <- 10
+    for(x_name in Xi_name){
+        Xi_name_wo <- Xi_name[which(!(Xi_name %in% x_name))]
+        x_form <- paste(c(Xi_name_wo), collapse='+')
+        form <- as.formula(sprintf('%s~%s', Yi_name, x_form))
+        print(form)
+        se[x_name] <- cross_val_lm(data_, form, n_cv)
+    }
+    se <- unlist(se)
+}
+
+backward_stepwise_lm <- function(data_, Yi_name) {
+    #think of a unit test for this
+    Xi_name <- names(data_)[!(names(data_) %in% Yi_name)]
+    X_count_start <- length(Xi_name) - 1 
+    worst <- list()
+
+    for(Xi_name_wo in 1:X_count_start){
+        se <- next_regressor_back(data_, Yi_name, Xi_name)
+        jext_worst <- se[which.max(se)]
+        Xi_name <- Xi_name[which(!Xi_name %in% names(next_worst))]
+        worst[paste(Xi_name, collapse=' + ')] <- next_worst
+    }
+    return(worst)
 }
 
 cross_val_lm <- function(data_, formula_, n_cv) {
