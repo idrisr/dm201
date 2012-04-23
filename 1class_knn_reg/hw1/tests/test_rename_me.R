@@ -1,4 +1,5 @@
-source('../src/functions.R')
+setwd('~/learning/dm201/1class_knn_reg/hw1/')
+source('src/functions.R')
 
 test_that('candidate columns are being properly split out', {
           make_col_name <- function(x) sapply(x, function(x) 
@@ -46,9 +47,11 @@ build_df2 <- function() {
     y  <- 1:n
     x <- matrix(0, n, cols)
     for(i in 1:cols){
-        x[,i] <- y + runif(n, 0, 1*(i-1))
+        x[,i] <- y + runif(n, 0, 10**(i-1))
     }
     df <- data.frame(x, y)
+    names(df) <- c('x1', 'x2', 'x3', 'x4', 'x5', 'y')
+    df
 }
 
 test_that('best next regressor is returned', {
@@ -91,8 +94,17 @@ test_that('prostate data at least runs', {
 
 pdata <- read.table('../data/prostate')[, -10]
 # temp setup
-source('../src/functions.R')
 df <- build_df2()
 f <- as.formula('y~x1')
 n_cv <- 10
 c <- cross_val_lm(df, f, n_cv)
+
+y <- rnorm(100)
+x <- rnorm(100)
+m <- lm(y ~ x)
+summary(x)
+summary(m)
+
+dnorm(0) == 1/ sqrt(2*pi)
+dnorm(1) == exp(-1/2)/ sqrt(2*pi)
+dnorm(1) == 1/ sqrt(2*pi*exp(1))

@@ -5,16 +5,17 @@ max_name <- function(x) names(which.max(x))
 min_name <- function(x) names(which.min(x))
 
 split_x_y_cand <- function(data_, Yi_name, Xi_name) {
-    # takes data_frame object, list of X names already included in model, list of
-    # Y names already included in model, and returns all other column names that
-    # are candidates to be next included column in model
+    # takes data_frame object, list of X names already included in model, list
+    # of Y names already included in model, and returns all other column names
+    # that are candidates to be next included column in model
     Xi_cand <- names(data_)[which(!(names(data_) %in% c(Xi_name, Yi_name)))]
 }
 
-standard_error_lm <- function(data_, lm_model) {
+standard_error_lm <- function(data_, lm_model, test_i) {
     pred <- predict.lm(lm_model, data_, se = TRUE)
-    stopifnot(length(pred$fit) == lm_model$model[, 1])
-    residual <- pred$fit - lm_model$model[, 1]
+    # stopifnot(length(pred$fit) == lm_model$model[, 1])
+    residual <- pred$fit[test_i] - lm_model$model[test_i, 1]
+    # residual <- pred$fit - lm_model$model[, 1]
     # see http://en.wikipedia.org/wiki/Ordinary_least_squares#Estimation
     se <- mean(residual^2)
 }
@@ -52,8 +53,8 @@ cross_val_lm <- function(data_, formula_, n_cv) {
     i <- 1:dim(data_)[1]
     for(i_cv in 1:n_cv){
         test_i <- which(i %% n_cv == (i_cv - 1))
-        cv_lm <- lm(formula_, data_[-test_i, ])
-        se[i_cv] <- standard_error_lm(data_[test_i, ], cv_lm)
+        lm_cv <- lm(formula_, data_[-test_i, ])
+        se[i_cv] <- standard_error_lm(data_, lm_cv, test_i)
     }
     return(sum(se))
 }
